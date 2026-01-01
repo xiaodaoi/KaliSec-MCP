@@ -1,0 +1,2 @@
+# Kali-Security-MCP
+连接kali linux与ClaudeCode等主流大模型进行全面CTF挑战及渗透测试的MCP，附带192个kali渗透工具，只要你有大模型，就能搞全面渗透
