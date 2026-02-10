@@ -1,33 +1,54 @@
-[README.md](https://github.com/user-attachments/files/24399779/README.md)
 # KaliSec-MCP + OpenCode Skill 一键部署包
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Tools-193-blue" alt="Tools">
+  <img src="https://img.shields.io/badge/Tools-183-blue" alt="Tools">
   <img src="https://img.shields.io/badge/Skills-58K%20Lines-green" alt="Skills">
   <img src="https://img.shields.io/badge/Commands-6-orange" alt="Commands">
   <img src="https://img.shields.io/badge/Platform-Kali%20Linux-red" alt="Platform">
+  <img src="https://img.shields.io/badge/Docker-Ready-blue" alt="Docker">
 </p>
 
 > **AI 驱动的智能安全测试框架**
 >
-> 将 193 个 Kali Linux 安全工具与 Claude AI 深度集成，实现智能化渗透测试和 CTF 解题。
+> 将 183 个 Kali Linux 安全工具与 Claude AI 深度集成，实现智能化渗透测试和 CTF 解题。
 
 ---
 
 ## ✨ 特性
 
-- 🔧 **193 个安全工具** - 涵盖信息收集、Web测试、密码攻击、漏洞利用、PWN/逆向
-- 🧠 **58,543 行知识库** - 五层架构的完整安全测试知识体系
+- 🔧 **183 个安全工具** - 涵盖信息收集、Web测试、密码攻击、漏洞利用、PWN/逆向
+- 🧠 **58,554 行知识库** - 五层架构的完整安全测试知识体系
 - ⚡ **6 个快捷命令** - 一键启动复杂攻击流程
 - 🎯 **智能决策树** - 自动根据工具输出选择下一步行动
 - 🏆 **CTF 专用模式** - 自动 Flag 检测和提取
 - 📊 **经验学习** - 记录攻击历史，持续优化策略
+- 🐳 **Docker 支持** - 一键部署完整的 Kali Linux 环境
 
 ---
 
 ## 📦 一键安装
 
-### 方法 1: 使用安装脚本（推荐）
+### 方法 1: 使用 Docker 部署（推荐）
+
+```bash
+# 克隆仓库
+git clone https://github.com/your-repo/kali-mcp-server.git
+cd kali-mcp-server
+
+# 使用 Docker Compose 启动
+docker-compose up -d
+
+# 查看日志
+docker-compose logs -f kali-mcp-server
+```
+
+Docker 容器将自动：
+- 安装 Kali Linux Everything（包含所有安全工具）
+- 配置 MCP 服务器
+- 部署 OpenCode Skill 知识库
+- 启动 SSE 服务器（端口 8765）
+
+### 方法 2: 使用安装脚本（Kali Linux 本地安装）
 
 ```bash
 # 克隆仓库
@@ -39,7 +60,7 @@ chmod +x install.sh
 ./install.sh
 ```
 
-### 方法 2: 手动安装
+### 方法 3: 手动安装
 
 ```bash
 # 1. 安装 Python 依赖
@@ -75,7 +96,7 @@ python3 mcp_server.py
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "kali-security": {
+    "kalisec-mcp": {
       "type": "local",
       "command": ["python3", "/opt/kali-mcp/mcp_server.py"],
       "enabled": true,
@@ -109,7 +130,7 @@ python3 mcp_server.py --transport=sse --host=0.0.0.0 --port=9000
 ```json
 {
   "mcpServers": {
-    "kali-mcp": {
+    "kalisec-mcp": {
       "url": "http://192.168.1.100:8765/sse",
       "transport": "sse"
     }
@@ -144,7 +165,7 @@ sudo iptables -A INPUT -p tcp --dport 8765 -j ACCEPT
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "kali-security": {
+    "kalisec-mcp": {
       "type": "local",
       "command": ["python3", "/opt/kali-mcp/mcp_server.py"],
       "enabled": true,
@@ -209,7 +230,7 @@ pwnpasi_auto_pwn(binary_path="/tmp/vuln", remote_ip="192.168.1.1", remote_port=9
 ├─────────────────────────────────────────────────────────────────┤
 │  L3: 场景剧本层 - 50+ 实战场景的完整攻击流程                     │
 ├─────────────────────────────────────────────────────────────────┤
-│  L2: 工具详解层 - 193 个工具的三段式深度解析                     │
+│  L2: 工具详解层 - 183 个工具的三段式深度解析                     │
 ├─────────────────────────────────────────────────────────────────┤
 │  L1: 快速参考层 - CTF 速查表、渗透测试速查表、紧急决策树         │
 └─────────────────────────────────────────────────────────────────┘
@@ -234,7 +255,7 @@ pwnpasi_auto_pwn(binary_path="/tmp/vuln", remote_ip="192.168.1.1", remote_port=9
 ### PWN 与逆向 (20 个)
 `quick_pwn_check`, `pwnpasi_auto_pwn`, `auto_reverse_analyze`, `radare2_analyze_binary`, ...
 
-### 智能化工具 (58 个)
+### 智能化工具 (68 个)
 `intelligent_ctf_solve`, `ai_intelligent_target_analysis`, `ai_adaptive_attack_execution`, ...
 
 ---
@@ -243,11 +264,10 @@ pwnpasi_auto_pwn(binary_path="/tmp/vuln", remote_ip="192.168.1.1", remote_port=9
 
 ```
 kali-mcp-server/
-├── mcp_server.py              # MCP 服务器主文件 (10,866 行)
+├── mcp_server.py              # MCP 服务器主文件 (10,630 行)
 ├── deploy/                    # 部署包
 │   ├── install.sh             # 一键安装脚本
 │   ├── uninstall.sh           # 卸载脚本
-│   ├── README.md              # 本文档
 │   └── opencode/              # OpenCode 配置文件
 │       ├── commands/          # 快捷命令
 │       │   ├── ctf.md
@@ -258,17 +278,72 @@ kali-mcp-server/
 │       │   └── pwn.md
 │       └── skills/            # Skill 知识库
 │           └── kali-security/
-│               ├── SKILL.md        # 完整知识库 (58K 行)
+│               ├── SKILL.md        # 完整知识库 (58,554 行)
 │               ├── CLAUDE.md       # 全局指令文件
 │               ├── kali-index.json # 工具索引
 │               └── attack-history.json # 学习数据
-├── CLAUDE.md                  # 项目说明
-└── requirements.txt           # Python 依赖
+├── Dockerfile                 # Docker 镜像构建文件
+├── docker-compose.yml         # Docker Compose 配置
+├── .dockerignore              # Docker 忽略文件
+├── requirements.txt           # Python 依赖
+└── README.md                  # 项目说明
 ```
 
 ---
 
+## 🐳 Docker 部署
+
+### 快速启动
+
+```bash
+# 构建并启动容器
+docker-compose up -d
+
+# 查看日志
+docker-compose logs -f kali-mcp-server
+
+# 进入容器
+docker-compose exec kali-mcp-server bash
+```
+
+### 容器特性
+
+- **基础镜像**: `kalilinux/kali-rolling:latest`
+- **安装内容**: Kali Linux Everything（完整工具集）
+- **特权模式**: 支持需要 root 权限的安全工具
+- **网络能力**: 支持原始套接字和包捕获
+- **健康检查**: 自动监控服务状态
+
+### 端口映射
+
+| 容器端口 | 主机端口 | 用途 |
+|----------|----------|------|
+| 8765 | 8765 | SSE 服务器 |
+
+### 数据持久化
+
+```yaml
+volumes:
+  - ./data:/opt/kali-mcp/data
+```
+
+将 `./data` 目录挂载到容器中，用于保存攻击历史和配置。
+
+---
+
 ## 🔄 卸载
+
+### Docker 部署卸载
+
+```bash
+# 停止并删除容器
+docker-compose down
+
+# 删除镜像
+docker rmi kali-mcp-kali-everything
+```
+
+### 本地安装卸载
 
 ```bash
 cd deploy
