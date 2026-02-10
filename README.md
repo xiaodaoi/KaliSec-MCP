@@ -32,8 +32,8 @@
 
 ```bash
 # 克隆仓库
-git clone https://github.com/your-repo/kali-mcp-server.git
-cd kali-mcp-server
+git clone https://github.com/xiaodaoi/KaliSec-MCP.git
+cd KaliSec-MCP
 
 # 使用 Docker Compose 启动
 docker-compose up -d
@@ -52,8 +52,8 @@ Docker 容器将自动：
 
 ```bash
 # 克隆仓库
-git clone https://github.com/your-repo/kali-mcp-server.git
-cd kali-mcp-server/deploy
+git clone https://github.com/xiaodaoi/KaliSec-MCP.git
+cd KaliSec-MCP/deploy
 
 # 运行安装脚本
 chmod +x install.sh
@@ -263,7 +263,7 @@ pwnpasi_auto_pwn(binary_path="/tmp/vuln", remote_ip="192.168.1.1", remote_port=9
 ## 📁 目录结构
 
 ```
-kali-mcp-server/
+KaliSec-MCP/
 ├── mcp_server.py              # MCP 服务器主文件 (10,630 行)
 ├── deploy/                    # 部署包
 │   ├── install.sh             # 一键安装脚本
