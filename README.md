@@ -10,7 +10,7 @@
 
 > **AI 驱动的智能安全测试框架**
 >
-> 将 183 个 Kali Linux 安全工具与 Claude AI 深度集成，实现智能化渗透测试和 CTF 解题。
+> 将 183 个 Kali Linux 安全工具与 OpenCode 深度集成，实现智能化渗透测试和 CTF 解题。
 
 ---
 
@@ -84,7 +84,7 @@ cp -r deploy/opencode/* ~/.config/opencode/
 
 #### 模式一：本地模式 (stdio) - 默认
 
-用于 **Claude Desktop** 或 **Claude Code** 本地连接，无需网络端口。
+用于 **OpenCode** 本地连接，无需网络端口。
 
 ```bash
 # 直接运行（默认 stdio 模式）
@@ -179,7 +179,7 @@ sudo iptables -A INPUT -p tcp --dport 8765 -j ACCEPT
 
 ### 验证安装
 
-重启 Claude Code 后，运行:
+重启 OpenCode 后，运行:
 
 ```
 server_health()
@@ -386,7 +386,7 @@ MIT License
 
 ## 🙏 致谢
 
-- [Claude Code](https://claude.ai/claude-code) - Anthropic
+- [OpenCode](https://opencode.ai/) - AI 驱动的开发环境
 - [Kali Linux](https://www.kali.org/) - Offensive Security
 - [MCP Protocol](https://modelcontextprotocol.io/) - Model Context Protocol
 
