@@ -1,5 +1,5 @@
 [README.md](https://github.com/user-attachments/files/24399779/README.md)
-# Kali MCP Server + Claude Skill 一键部署包
+# KaliSec-MCP + OpenCode Skill 一键部署包
 
 <p align="center">
   <img src="https://img.shields.io/badge/Tools-193-blue" alt="Tools">
@@ -49,8 +49,8 @@ pip3 install mcp pydantic aiohttp aiofiles
 mkdir -p ~/.local/share/kali-mcp
 cp mcp_server.py ~/.local/share/kali-mcp/
 
-# 3. 复制 Claude 配置
-cp -r deploy/claude-config/* ~/.claude/
+# 3. 复制 OpenCode 配置
+cp -r deploy/opencode/* ~/.config/opencode/
 
 # 4. 配置 MCP 服务器（见下方配置说明）
 ```
@@ -70,14 +70,18 @@ cp -r deploy/claude-config/* ~/.claude/
 python3 mcp_server.py
 ```
 
-**Claude Code 配置** (`~/.claude/claude_desktop_config.json`):
+**OpenCode 配置** (`~/.config/opencode/opencode.json`):
 ```json
 {
-  "mcpServers": {
-    "kali-intelligent-ctf": {
-      "command": "python3",
-      "args": ["/home/YOUR_USER/.local/share/kali-mcp/mcp_server.py"],
-      "env": {}
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "kali-security": {
+      "type": "local",
+      "command": ["python3", "/opt/kali-mcp/mcp_server.py"],
+      "enabled": true,
+      "environment": {
+        "PYTHONUNBUFFERED": "1"
+      }
     }
   }
 }
@@ -132,17 +136,21 @@ sudo ufw allow 8765/tcp
 sudo iptables -A INPUT -p tcp --dport 8765 -j ACCEPT
 ```
 
-### Claude Code MCP 配置
+### OpenCode MCP 配置
 
-在 `~/.claude/claude_desktop_config.json` 中添加:
+在 `~/.config/opencode/opencode.json` 中添加:
 
 ```json
 {
-  "mcpServers": {
-    "kali-intelligent-ctf": {
-      "command": "python3",
-      "args": ["/home/YOUR_USER/.local/share/kali-mcp/mcp_server.py"],
-      "env": {}
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "kali-security": {
+      "type": "local",
+      "command": ["python3", "/opt/kali-mcp/mcp_server.py"],
+      "enabled": true,
+      "environment": {
+        "PYTHONUNBUFFERED": "1"
+      }
     }
   }
 }
@@ -240,8 +248,7 @@ kali-mcp-server/
 │   ├── install.sh             # 一键安装脚本
 │   ├── uninstall.sh           # 卸载脚本
 │   ├── README.md              # 本文档
-│   └── claude-config/         # Claude 配置文件
-│       ├── CLAUDE.md          # 全局指令文件
+│   └── opencode/              # OpenCode 配置文件
 │       ├── commands/          # 快捷命令
 │       │   ├── ctf.md
 │       │   ├── pentest.md
@@ -250,9 +257,11 @@ kali-mcp-server/
 │       │   ├── recon.md
 │       │   └── pwn.md
 │       └── skills/            # Skill 知识库
-│           ├── kali-security.md    # 完整知识库 (58K 行)
-│           ├── kali-index.json     # 工具索引
-│           └── attack-history.json # 学习数据
+│           └── kali-security/
+│               ├── SKILL.md        # 完整知识库 (58K 行)
+│               ├── CLAUDE.md       # 全局指令文件
+│               ├── kali-index.json # 工具索引
+│               └── attack-history.json # 学习数据
 ├── CLAUDE.md                  # 项目说明
 └── requirements.txt           # Python 依赖
 ```

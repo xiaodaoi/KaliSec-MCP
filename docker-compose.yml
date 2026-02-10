@@ -1,0 +1,34 @@
+services:
+  # Everything 版本配置（193 个 MCP 安全工具，15-20GB）
+  kali-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: kali-mcp-kali-everything
+    container_name: kali-mcp-server
+    ports:
+      - "8765:8765"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./data:/opt/kali-mcp/data
+    restart: unless-stopped
+    # 特权模式：允许执行需要root权限的安全工具（如nmap SYN扫描）
+    privileged: true
+    user: root
+    # 添加网络能力，支持原始套接字和包捕获
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    networks:
+      - kali-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8765/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+networks:
+  kali-network:
+    driver: bridge

@@ -1,3 +1,7 @@
+---
+description: Kali MCP deep binding instruction system for security testing and CTF challenges
+---
+
 # Kali MCP 深度绑定指令系统
 
 > **版本**: 2.0.0 | **最后更新**: 2025-12-12

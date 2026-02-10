@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #############################################################################
-#  Kali MCP Server + Claude Skill 一键安装脚本
+#  KaliSec-MCP + OpenCode Skill 一键安装脚本
 #
 #  功能:
 #    - 安装 MCP 服务器及其依赖
-#    - 配置 Claude Code 的 MCP 服务器
+#    - 配置 OpenCode 的 MCP 服务器
 #    - 部署 Skill 知识库和快捷命令
 #
 #  使用方法:
@@ -13,7 +13,7 @@
 #    ./install.sh
 #
 #  作者: Kali MCP Team
-#  版本: 1.0.0
+#  版本: 2.0.0
 #############################################################################
 
 set -e
@@ -30,7 +30,7 @@ NC='\033[0m' # No Color
 # 配置变量
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-CLAUDE_DIR="$HOME/.claude"
+OPENCODE_DIR="$HOME/.config/opencode"
 MCP_INSTALL_DIR="$HOME/.local/share/kali-mcp"
 
 # 打印带颜色的消息
@@ -38,9 +38,9 @@ print_banner() {
     echo -e "${PURPLE}"
     echo "╔══════════════════════════════════════════════════════════════════╗"
     echo "║                                                                  ║"
-    echo "║     🔧 Kali MCP Server + Claude Skill 一键安装程序 🔧           ║"
+    echo "║     🔧 KaliSec-MCP + OpenCode Skill 一键安装程序 🔧        ║"
     echo "║                                                                  ║"
-    echo "║     版本: 1.0.0                                                  ║"
+    echo "║     版本: 2.0.0                                                  ║"
     echo "║     193个安全工具 | 58K行知识库 | 6个快捷命令                    ║"
     echo "║                                                                  ║"
     echo "╚══════════════════════════════════════════════════════════════════╝"
@@ -145,23 +145,19 @@ install_mcp_server() {
 }
 
 # 配置 Claude Code
-configure_claude() {
-    print_step "配置 Claude Code..."
+configure_opencode() {
+    print_step "配置 OpenCode..."
 
-    # 创建 Claude 配置目录
-    mkdir -p "$CLAUDE_DIR"/{commands,skills}
-
-    # 复制全局 CLAUDE.md
-    cp "$SCRIPT_DIR/claude-config/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
-    print_success "已安装全局指令文件"
+    # 创建 OpenCode 配置目录
+    mkdir -p "$OPENCODE_DIR"/{commands,skills/kali-security}
 
     # 复制 commands
-    cp "$SCRIPT_DIR/claude-config/commands/"*.md "$CLAUDE_DIR/commands/" 2>/dev/null || true
-    COMMANDS_COUNT=$(ls -1 "$CLAUDE_DIR/commands/"*.md 2>/dev/null | wc -l)
+    cp "$SCRIPT_DIR/opencode/commands/"*.md "$OPENCODE_DIR/commands/" 2>/dev/null || true
+    COMMANDS_COUNT=$(ls -1 "$OPENCODE_DIR/commands/"*.md 2>/dev/null | wc -l)
     print_success "已安装 $COMMANDS_COUNT 个快捷命令"
 
     # 复制 skills
-    cp "$SCRIPT_DIR/claude-config/skills/"* "$CLAUDE_DIR/skills/" 2>/dev/null || true
+    cp "$SCRIPT_DIR/opencode/skills/kali-security/"* "$OPENCODE_DIR/skills/kali-security/" 2>/dev/null || true
     print_success "已安装 Skill 知识库和索引"
 
     # 配置 MCP 服务器
@@ -172,8 +168,8 @@ configure_claude() {
 configure_mcp_settings() {
     print_step "配置 MCP 服务器连接..."
 
-    # Claude Code 的 MCP 配置文件路径
-    MCP_CONFIG_FILE="$CLAUDE_DIR/claude_desktop_config.json"
+    # OpenCode 的 MCP 配置文件路径
+    MCP_CONFIG_FILE="$OPENCODE_DIR/opencode.json"
 
     # 检查是否存在现有配置
     if [ -f "$MCP_CONFIG_FILE" ]; then
@@ -193,15 +189,18 @@ mcp_install_dir = "$MCP_INSTALL_DIR"
 with open(config_file, 'r') as f:
     config = json.load(f)
 
-# 确保 mcpServers 存在
-if 'mcpServers' not in config:
-    config['mcpServers'] = {}
+# 确保 mcp 存在
+if 'mcp' not in config:
+    config['mcp'] = {}
 
-# 添加 Kali MCP 服务器配置
-config['mcpServers']['kali-intelligent-ctf'] = {
-    "command": "python3",
-    "args": [os.path.join(mcp_install_dir, "mcp_server.py")],
-    "env": {}
+# 添加 KaliSec-MCP 服务器配置
+config['mcp']['kalisec-mcp'] = {
+    "type": "local",
+    "command": ["python3", os.path.join(mcp_install_dir, "mcp_server.py")],
+    "enabled": True,
+    "environment": {
+        "PYTHONUNBUFFERED": "1"
+    }
 }
 
 # 写回配置
@@ -214,11 +213,15 @@ EOF
         # 创建新配置
         cat > "$MCP_CONFIG_FILE" << EOF
 {
-  "mcpServers": {
-    "kali-intelligent-ctf": {
-      "command": "python3",
-      "args": ["$MCP_INSTALL_DIR/mcp_server.py"],
-      "env": {}
+  "\$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "kalisec-mcp": {
+      "type": "local",
+      "command": ["python3", "$MCP_INSTALL_DIR/mcp_server.py"],
+      "enabled": true,
+      "environment": {
+        "PYTHONUNBUFFERED": "1"
+      }
     }
   }
 }
@@ -243,7 +246,7 @@ verify_installation() {
     fi
 
     # 检查 CLAUDE.md
-    if [ -f "$CLAUDE_DIR/CLAUDE.md" ]; then
+    if [ -f "$OPENCODE_DIR/skills/kali-security/CLAUDE.md" ]; then
         print_success "全局指令文件 ✓"
     else
         print_error "全局指令文件缺失"
@@ -251,15 +254,15 @@ verify_installation() {
     fi
 
     # 检查 skills
-    if [ -f "$CLAUDE_DIR/skills/kali-security.md" ]; then
-        SKILL_LINES=$(wc -l < "$CLAUDE_DIR/skills/kali-security.md")
+    if [ -f "$OPENCODE_DIR/skills/kali-security/SKILL.md" ]; then
+        SKILL_LINES=$(wc -l < "$OPENCODE_DIR/skills/kali-security/SKILL.md")
         print_success "Skill 知识库 ✓ ($SKILL_LINES 行)"
     else
         print_warning "Skill 知识库未安装（可选）"
     fi
 
     # 检查 commands
-    COMMANDS_COUNT=$(ls -1 "$CLAUDE_DIR/commands/"*.md 2>/dev/null | wc -l)
+    COMMANDS_COUNT=$(ls -1 "$OPENCODE_DIR/commands/"*.md 2>/dev/null | wc -l)
     if [ "$COMMANDS_COUNT" -gt 0 ]; then
         print_success "快捷命令 ✓ ($COMMANDS_COUNT 个)"
     else
@@ -290,7 +293,7 @@ show_completion() {
     echo ""
     echo -e "${CYAN}安装位置:${NC}"
     echo "  MCP 服务器: $MCP_INSTALL_DIR"
-    echo "  Claude 配置: $CLAUDE_DIR"
+    echo "  OpenCode 配置: $OPENCODE_DIR"
     echo ""
     echo -e "${CYAN}快捷命令:${NC}"
     echo "  /ctf TARGET [CATEGORY]   - CTF 快速解题"
@@ -301,8 +304,8 @@ show_completion() {
     echo "  /pwn BINARY [REMOTE]     - PWN 攻击"
     echo ""
     echo -e "${CYAN}下一步:${NC}"
-    echo "  1. 重启 Claude Code 以加载新配置"
-    echo "  2. 在 Claude Code 中测试: server_health()"
+    echo "  1. 重启 OpenCode 以加载新配置"
+    echo "  2. 在 OpenCode 中测试: server_health()"
     echo "  3. 尝试快捷命令: /ctf http://example.com web"
     echo ""
     echo -e "${YELLOW}注意: 本工具仅用于授权的安全测试和 CTF 竞赛${NC}"
@@ -314,7 +317,7 @@ main() {
     print_banner
 
     echo ""
-    echo -e "${YELLOW}此脚本将安装 Kali MCP Server 及相关配置到您的系统${NC}"
+    echo -e "${YELLOW}此脚本将安装 KaliSec-MCP 及相关配置到您的系统${NC}"
     echo ""
     read -p "是否继续安装? [Y/n] " -n 1 -r
     echo ""
@@ -329,7 +332,7 @@ main() {
     check_environment
     install_dependencies
     install_mcp_server
-    configure_claude
+    configure_opencode
 
     echo ""
     if verify_installation; then
